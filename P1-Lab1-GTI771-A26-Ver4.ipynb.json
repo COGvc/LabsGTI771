@@ -1,0 +1,251 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# GTI771 - Apprentissage machine avancé\n",
+    "## Département de génie logiciel et des technologies de l’information (LogTI)\n",
+    "\n",
+    "\n",
+    "## Partie 1\n",
+    "## Laboratoire 1 - Analyse et préparation des données\n",
+    "<font color=white> Version 1.0 - Janvier 2023 </font><br>\n",
+    "<font color=white> Version 2.0 - Septembre 2024 </font><br>\n",
+    "<font color=white> Version 2.1 - Septembre 2024 </font><br>\n",
+    "<font color=black> Version 3.0 - Septembre 2025 </font><br>\n",
+    "<font color=black> Version 4.0 - Septembre 2026 </font>\n",
+    "\n",
+    "##### Prof. Alessandro L. Koerich"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "| NOMS                  | CODE PERMANENT                                   |PARTICIPATION (0-100%)|  \n",
+    "|-----------------------|--------------------------------------------------|----------------------|\n",
+    "| Étudiant1             | Code1                                            |     100              |\n",
+    "| Étudiant2             | Code2                                            |      80              |\n",
+    "| Étudiant3             | Code3                                            |      70              |"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Introduction\n",
+    "\n",
+    "Ce premier laboratoire vous propose de plonger dans le monde de la préparation de données pour l'apprentissage machine. Nous allons nous intéresser à un problème de classification d'images particulièrement pertinent : la reconnaissance d'émotions faciales [Facial Expression Recognition (FER)](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data). L'objectif final est de développer un modèle capable de classer des visages humains dans l'une des sept (7) émotions de base : surprise, fear, disgust, happiness, sadnes, anger et neutral.\n",
+    "\n",
+    "Le jeu de données que nous utiliserons présente des défis intéressants. Les images sont souvent bruitées, contiennent des artefacts ou des éléments perturbateurs, ce qui reflète les conditions réelles d'acquisition d'images faciales. Ces difficultés sont courantes dans les problèmes d'apprentissage machine modernes et nécessitent une préparation minutieuse des données.\n",
+    "\n",
+    "![RAF-DB](http://www.whdeng.cn/RAF/RAF-DB.png)\n",
+    "\n",
+    "Votre mission consiste à :\n",
+    "\n",
+    "1. Analyser la distribution des données : Comprendre la répartition des classes, identifier les déséquilibres éventuels et les caractéristiques spécifiques de l'ensemble de données.\n",
+    "2. Nettoyer les données : Detecter et supprimer les données (images) aberrantes et appliquer des techniques de correction pour améliorer la qualité des données (images).\n",
+    "3. Prétraiter les images : Réduire la variabilité intra-classe en appliquant des techniques de prétraitement adaptées (p.ex. normalisation des pixels, suppression de l’arrière-plan, etc.).\n",
+    "4. Gérer le déséquilibre des classes : Mettre en œuvre des stratégies pour équilibrer les classes et améliorer les performances du modèle sur les classes minoritaires (suréchantillonnage, sous-échantillonnage, augmentation de données, etc.).\n",
+    "\n",
+    "L'évaluation de votre travail sera basée sur :\n",
+    "\n",
+    "- La pertinence des méthodes utilisées: Choix judicieux des algorithmes et des techniques de nettoyage et de prétraitement.\n",
+    "- La qualité de votre code: Clarté, organisation, utilisation de commentaires explicites.\n",
+    "- La qualité de votre analyse: Capacité à interpréter les résultats et à justifier vos choix.\n",
+    "\n",
+    "Ce laboratoire vous permettra de maîtriser les étapes clés de la préparation de données pour l'apprentissage machine et de développer votre intuition sur les défis liés à l'informatique affective."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Partie 1 - Analyse exploratoire des données\n",
+    "\n",
+    "On va commencer en regardant les données.\n",
+    "\n",
+    "Pour ce lab, nous allons utiliser le Real-world Affective Faces Database (RAF-DB)\n",
+    "\n",
+    "L'ensemble de données est disponible dans Moodle et il contient 15,339 images de visages avec differentes résolutions, en niveau de gris et couleur.\n",
+    "\n",
+    "Les partitions de développement et de test sont déjà préétablies.\n",
+    "- 12,271 échantillons de développement (avec étiquettes) \n",
+    "- 3,068 échantillons pour l'évaluation final (sans étiquettes) \n",
+    "\n",
+    "Les images sont nommées au format \"train_XXXXX.jpg\" / \"test_XXXX.jpg\".\n",
+    "    \n",
+    "Fichier d'étiquettes (fichier csv):\n",
+    "- emotion: integer [1, 7], où:\n",
+    "  - 1 : Surprise\n",
+    "  - 2 : Peur (Fear)\n",
+    "  - 3 : Dégoût (Disgust)\n",
+    "  - 4 : Joie (Happiness)\n",
+    "  - 5 : Tristesse (Sadness)\n",
+    "  - 6 : Colère (Anger)\n",
+    "  - 7 : Neutre (Neutral)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## <font color=black> 1a: Visualisation des images de visages </font>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "###  <font color=blue> À faire: </font>\n",
+    "\n",
+    "1. Générer une grille de 7 lignes et $n$ colonnes. Chaque ligne correspond à une émotion différente. Pour chaque ligne, sélectionner aléatoirement $n$ images de l'ensemble de développement appartenant à l'émotion associée et les afficher dans la grille. Ajoutez un court commentaire sur les résultats.\n",
+    "\n",
+    "Vous pouvez visualiser les images en utilisant `plt.imshow`.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1b: Distribuition des données"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "L'ensemble de données est-il équilibré ? Autrement dit, chaque classe contient-elle un nombre similaire d'exemples ?\n",
+    "\n",
+    "###  <font color=blue> À faire: </font>\n",
+    "\n",
+    "1. Représentez graphiquement la distribution des classes pour le ensemble de développement à l'aide d'histogrammes. Ajoutez un court commentaire sur les résultats."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1c: Nettoyage de données\n",
+    "\n",
+    "Entrées: *data-original* <br>\n",
+    "Sorties: *data-cleaned*"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Dans quelle mesure la qualité des images influe-t-elle sur la précision des modèles de classification ? Afin d'apporter une réponse à cette question, nous allons expérimenter différentes méthodes de prétraitement des images.\n",
+    "\n",
+    "Avant de poursuivre l'entrainement d'un modèle d'apprentissage machine, il est crucial d'assurer la qualité de vos données. Une étape de nettoyage rigoureuse est indispensable pour détecter et corriger les éventuelles anomalies.\n",
+    "\n",
+    "###  <font color=blue> À faire: </font>\n",
+    "\n",
+    "1. Conception d'un pipeline de nettoyage:\n",
+    "   - Détection: Mettre en place des méthodes statistiques et des règles métier pour identifier les anomalies (p.ex.: valeurs des pixels, resolution de l'image, carte de couleurs, etc.).\n",
+    "   - Correction: Implémenter des stratégies de correction adaptées (p.ex. : suppression des outliers extrêmes, changement de carte de couleurs, etc.)\n",
+    "2. Application au ensemble de développement\n",
+    "3. Traitement de l'ensemble de test: \n",
+    "   - Utiliser les paramètres de normalisation déterminés sur l'ensemble de développement pour normaliser l'ensemble de test. Éviter d'introduire de nouvelles informations de l'ensemble de test dans le processus de nettoyage afin de préserver son caractère \"inconnu\".\n",
+    "4. Générez un nouveau jeu de données (dossier data-cleaned) avec les images obtenues (traités). Vous n'avez pas besoin de remettre ce jeu de données, mais il vous sera demandé de l'utiliser plus tard.\n",
+    "5. Documentation du processus:\n",
+    "   - Ajoutez un court description des étapes de nettoyage, les méthodes utilisées et les raisons de chaque choix.\n",
+    "   - Ajoutex un tableau pour quantifier les problèmes trouvés (par ex., # ou % de bonnes images, # ou % de images corrompues, etc.) dans l'ensemble de données par votre pipeline.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1d: Prétraitement des images\n",
+    "\n",
+    "Entrée: *data-cleaned*<br>\n",
+    "Sortie: *data-cleaned-pre*\n",
+    "\n",
+    "Il y a différents types de prétraitement que nous pouvons appliquer à des images dans les ensembles de données pour réduire la variabilité, réduire des bruits, etc.\n",
+    "\n",
+    "En particulier, pour les images de visage, quelques prétraitements peuvent se montrer utiles, comme: \n",
+    "- Suppression de l’arrière-plan\n",
+    "- Localization/recadrage du visage\n",
+    "- Localisation des eux\n",
+    "- Lissage du visage\n",
+    "- Normalization du contraste\n",
+    "- Normalization de la résolution (W x L pixels)\n",
+    "- etc.\n",
+    "\n",
+    "###  <font color=blue> À faire: </font>\n",
+    "\n",
+    "1. Appliquez au moins un prétraitement sur les images de visages. Vous pouvez choisir différents algorithmes de prétraitement d’images dans [scikit-image](https://scikit-image.org/docs/stable/api/api.html). Vous pouvez aussi trouver d’autres types de prétraitement qui sont plus généraux dans [scikit-learn](https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing).\n",
+    "2. Appliquez sur le ensemble de développement. Attention! Étant donné que les données de l'ensemble de test sont considérées \"inconnues\" préalablement, il faut bien réfléchir quoi faire avec ces données.\n",
+    "3. Générez des nouveaux jeux de données (dossiers *data-cleaned-pre*) avec les images obtenues après le prétraitement. Vous n'avez pas besoin de remettre ce jeu de données, mais il vous sera demandé de l'utiliser plus tard.\n",
+    "4. Ajoutez un court explication et justifiez le prétraitement utilisé. Expliquer comment appliquer le prétraitement à l'ensemble de test en évitant la fuite d'information.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1e: Rééquilibrage des données"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Entrées: *data-cleaned-pre*<br> \n",
+    "Sorties: *data-cleaned-pre-reeq*\n",
+    "\n",
+    "Le déséquilibre des classes est un problème courant en apprentissage machine, particulièrement dans les problèmes de classification. Il survient lorsque certaines classes sont beaucoup plus représentées que d'autres dans un jeu de données. Cela peut conduire à ce que les modèles soient biaisés vers la classe majoritaire et aient des performances médiocres sur la classe minoritaire.\n",
+    "\n",
+    "**Stratégies pour équilibrer les classes**\n",
+    "\n",
+    "Il existe differentes méthodes pour gérer ce déséquilibre au niveau des données (data-level):\n",
+    "  - Sous-échantillonnage de la classe majoritaire (Undersampling):\n",
+    "    - Random Undersampling: On supprime aléatoirement des instances de la classe majoritaire. N'utilisez pas cette méthode, car elle entraîne une perte d'information.\n",
+    "  - Sur-échantillonnage de la classe minoritaire (Oversampling):\n",
+    "    - Random Oversampling: On réplique aléatoirement des instances de la classe minoritaire. Utilisez des transformations d'images spécifiques au domaine, appliquées de manière ciblée aux échantillons de la classe minoritaire :\n",
+    "      - Transformations géométriques (rotation aléatoire, rognage/découpage, pivotement horizontal)\n",
+    "      - Transformations de couleur (variation de la gigue de couleur/color jittering, ajustements de contraste)\n",
+    "      - Techniques de mélange avancées comme Mixup ou CutMix\n",
+    "\n",
+    "Scikit-learn a plusieurs méthodes pour gérer le déséquilibre. Soyez prudent si vous décidez d'utiliser une méthode, car certaines d'entre elles ne sont pas adaptées aux images.\n",
+    "\n",
+    "###  <font color=blue> À faire: </font>\n",
+    "1. Choix de la méthode : Sélectionnez une méthode d'équilibrage adaptée à votre jeu de données (p.ex.: sous-échantillonnage, sur-échantillonnage, etc.). Justifiez ce choix en fonction des caractéristiques de vos données et de l'objectif de votre étude.\n",
+    "2.  Appliquez la méthode choisie uniquement au ensemble de dévéloppment. Il est impératif de ne pas modifier l'ensemble de test, car il doit rester indépendant pour une évaluation objective d'un modèle.\n",
+    "3. Générez les fichiers suivants en ajoutant le suffixe \"-ree\" (pour \"rééquilibré\") à leur nom d'origine : *data-cleaned-pre-reeq*\n",
+    "4. Ajoutez un court description de la méthode d'équilibrage utilisée, expliquez pourquoi cette méthode a été privilégiée par rapport à d'autres. Comme fait en **1a** et **1b**, présentez une grille avec des exemples d'images ajoutées et un histogramme pour l'ensemble augmenté."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Ce travail se poursuit dans le prochain notebook Jupyter"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
